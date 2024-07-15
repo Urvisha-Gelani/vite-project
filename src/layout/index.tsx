@@ -1,21 +1,20 @@
-import { Col, Container, Row } from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
 
 function Layout() {
   return (
     <>
-      <Container fluid>
-        <Row>
-          <Col xs={12} md={3}>
+      <div>
+        <div className="d-flex flex-wrap ">
+          <div  className="w-20">
             <Sidebar />
-          </Col>
-          <Col xs={12} md={9}>
+          </div>
+          <div className="w-80 mx-auto">
             <Outlet />
             
-          </Col>
-        </Row>
-      </Container>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
