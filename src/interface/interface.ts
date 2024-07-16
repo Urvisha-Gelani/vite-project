@@ -3,7 +3,7 @@ export interface userType {
   name: string;
   username: string;
   email: string;
-  address: {
+  address?: {
     street: string;
     suite: string;
     city: string;
@@ -12,10 +12,10 @@ export interface userType {
       lat: string;
       lng: string;
     };
-  };
-  phone: string;
-  website: string;
-  company: {
+  } | undefined;
+  phone?: string;
+  website?: string;
+  company?: {
     name: string;
     catchPhrase: string;
     bs: string;
@@ -34,4 +34,11 @@ export interface CommentType {
   name: string;
   email: string;
   body: string;
+}
+
+
+export interface AlbumsType {
+  userId : number;
+  id : number;
+  title : string
 }

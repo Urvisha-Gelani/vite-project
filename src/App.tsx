@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./layout";
 import Users from "./components/users";
 import Posts from "./components/posts/Posts";
-import Post from "./components/users/Post";
 import CommentsList from "./components/comments/CommentsList";
-import PostComments from "./components/posts/PostComments";
+import Albums from "./components/albums/Albums";
+// import Profile from "./components/users/Profile";
 
 function App() {
   return (
@@ -15,10 +15,10 @@ function App() {
             <Route index element={<Users />} />
             <Route path="users" element={<Users />} />
             <Route path="posts" element={<Posts />} />
-            <Route path="comments" element={<CommentsList />} />
-            <Route path="/users/:userId/posts" element={<Post />} />
-            <Route path="/comments?postId=postId" element={<PostComments />} />
-
+            <Route path="comments" element={<CommentsList />}/>
+            <Route path="albums" element={<Albums />}/>
+            <Route path="/users/:userId/posts" element={<Posts />} />
+            {/* <Route path="/users/:userId" element={<Profile />} /> */}
           </Route>
         </Routes>
       </Router>

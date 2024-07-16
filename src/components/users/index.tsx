@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { userType } from "../../interface/interface";
 import Spinner from "../spinner/Spinner";
 import { Link } from "react-router-dom";
+// import { FaEye } from "react-icons/fa";
 
 function Users() {
   const { users, getUsers, loading } = useAppStore();
@@ -23,19 +24,27 @@ function Users() {
           <div className=" mx-4">
             <h1>Users</h1>
             <Table className="border" striped hover size="sm">
+              <thead>
+                <tr className="px-3  align-middle  text-center box-shadow mb-2">
+                  <th className="py-3">Name</th>
+                  <th>Email</th>
+                  <th>City</th>
+                  <th colSpan={2}>Action</th>
+                </tr>
+              </thead>
               <tbody>
-                {(users as userType[]).map((user: userType) => {
+                {(users as userType[]).map((users) => {
                   return (
                     <tr
                       style={{ width: "100%" }}
                       className="px-3  align-middle  text-center box-shadow mb-2"
-                      key={user.id}
+                      key={users.id}
                     >
-                      <td className="py-3">{user.name}</td>
-                      <td className="">{user.email}</td>
-                      <td className="">{user.address.city}</td>
+                      <td className="py-3">{users.name}</td>
+                      <td className="">{users.email}</td>
+                      <td className="">{users.address?.city}</td>
                       <td className="padding-0 text-center">
-                        <Link to={`/users/${user.id}/posts`}>
+                        <Link to={`/users/${users.id}/posts`}>
                           {" "}
                           <Button
                             variant="primary"
@@ -45,14 +54,22 @@ function Users() {
                           </Button>
                         </Link>
                       </td>
+
                       <td className="padding-0 text-center">
-                        <Button
-                          variant="primary"
-                          className="btn-bg-color border-0"
-                        >
-                          Comments
-                        </Button>
+                        <Link to={`/albums?userId=${users.id}`}>
+                          <Button
+                            variant="primary"
+                            className="btn-bg-color border-0"
+                          >
+                            Albums
+                          </Button>
+                        </Link>
                       </td>
+                      {/* <td className="padding-0 text-center">
+                        <Link to={`/users/${users.id}`}>
+                        <FaEye />
+                        </Link>
+                      </td> */}
                     </tr>
                   );
                 })}

@@ -12,8 +12,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 /* src/index.css */
-h1{
-  margin: 0!important;
+h1 {
+  margin: 0 !important;
 }
 .content {
   margin-left: 250px;
@@ -22,7 +22,7 @@ h1{
 .sidebar {
   width: 250px;
   height: 100vh;
-  background-color: #7776B3;
+  background-color: #7776b3;
   padding: 15px;
   position: fixed;
   color: white !important;
@@ -43,9 +43,9 @@ h1{
   width: 80%;
 }
 .card-bg {
-  background-color: #CDE8E5;
+  background-color: #cde8e5;
 }
-.card-icon{
+.card-icon {
   padding: 9px 20px;
   background: aliceblue;
   border-radius: 50%;
@@ -58,26 +58,34 @@ h1{
   width: 500px;
 }
 .btn-bg-color {
-  background-color: #2E236C!important;
+  background-color: #2e236c !important;
 }
 .pagination-bg {
-  background-color: #5A639C!important;
+  background-color: #5a639c !important;
 }
 .m-right {
   margin-right: 10px !important;
 }
 .comment-icon {
   padding: 13px 20px;
-    background: #2E236C;
-    color: white;
-    border-radius: 50%;
+  background: #2e236c;
+  color: white;
+  border-radius: 50%;
 }
-.infinite-scroll-component__outerdiv,.infinite-scroll-component,.w-100 {
-  width: 100%!important;
+.infinite-scroll-component__outerdiv,
+.infinite-scroll-component,
+.w-100 {
+  width: 100% !important;
 }
 .box-shadow {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
+
+.comments-container {
+  height: 400px;
+  overflow-y: auto;
+}
+
 @media (max-width: 768px) {
   .vh-100 {
     height: auto;
