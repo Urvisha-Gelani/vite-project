@@ -43,7 +43,7 @@ function Users() {
                       <td className="py-3">{users.name}</td>
                       <td className="">{users.email}</td>
                       <td className="">{users.address?.city}</td>
-                      <td className="padding-0 text-center">
+                      {/* <td className="padding-0 text-center">
                         <Link to={`/users/${users.id}/posts`}>
                           {" "}
                           <Button
@@ -53,7 +53,7 @@ function Users() {
                             Posts
                           </Button>
                         </Link>
-                      </td>
+                      </td> */}
 
                       <td className="padding-0 text-center">
                         <Link to={`/albums?userId=${users.id}`}>

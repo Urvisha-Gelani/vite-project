@@ -22,6 +22,7 @@ function Posts() {
   const [postsPerPage] = useState(10);
   const [showModal, setShowModal] = useState(false);
   if(localStorage.getItem("posts")) {
+    
     console.log(JSON.parse(localStorage.getItem("posts")),"**********posttttttttt*******");
   }else {
     console.log("********************")
@@ -223,7 +224,7 @@ function Posts() {
                     type="submit"
                     disabled={formik.isSubmitting}
                   >
-                    Save Changes
+                   Post
                   </Button>
                 </Modal.Footer>
               </Form>

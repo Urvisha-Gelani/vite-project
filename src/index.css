@@ -12,7 +12,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 /* src/index.css */
-h1 {
+h1,p {
   margin: 0 !important;
 }
 .content {
@@ -59,6 +59,9 @@ h1 {
 }
 .btn-bg-color {
   background-color: #2e236c !important;
+}
+.text-color {
+  color: #2e236c !important;
 }
 .pagination-bg {
   background-color: #5a639c !important;

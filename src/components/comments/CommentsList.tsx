@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { CommentType } from "../../interface/interface";
+import { CommentType, PostType } from "../../interface/interface";
 import { Comment } from "react-loader-spinner";
-import { apiUrl, toCamelCase } from "../../common/common";
+import {
+  apiUrl,
+  loadPostsFromLocalStorage,
+  toCamelCase,
+} from "../../common/common";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Spinner from "../spinner/Spinner";
-import useAppStore from "../../store/Appstore";
 
 const CommentsList = () => {
   const location = useLocation();
@@ -14,7 +18,7 @@ const CommentsList = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState(1);
-  const { post, getPost } = useAppStore();
+  const [posts, setPosts] = useState<PostType | null>(null);
   const postId = queryParams.get("postId");
 
   const commentsUrl = () => {
@@ -23,41 +27,62 @@ const CommentsList = () => {
       : `${apiUrl}comments?_page=${page}&_limit=10`;
   };
 
+  const showPostsComments = (postId: any) => {
+    const allPosts = loadPostsFromLocalStorage().filter(
+      (post: PostType) => post.id == postId
+    );
+    if (allPosts.length > 0) {
+      setPosts(allPosts[0]);
+    }
+  };
+
   useEffect(() => {
-    postId ? getPost(Number(postId)) : null;
-    setLoading(true);
+    if (postId) {
+      showPostsComments(postId);
+    }
     setComments([]);
     setPage(1);
     fetchComments();
   }, [location.search]);
 
   const fetchComments = async () => {
-    // postId ? setLoading(true) : setLoading(false);
-    setLoading(false);
+    setLoading(true);
     const response = await axios.get(commentsUrl());
-    setTimeout(() => {
-      setComments((prevComments) => [...prevComments, ...response.data]);
-      setPage((prevPage) => prevPage + 1);
-    }, 1000);
+    setLoading(false);
+    setComments((prevComments) => [...prevComments, ...response.data]);
+    setPage((prevPage) => prevPage + 1);
   };
 
   return (
     <>
-      {loading || comments.length === 0 ? (
+      {loading && comments.length === 0 ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
-          <Spinner status={loading || comments.length === 0 ? true : loading} />
+          <Spinner status={loading} />
         </div>
       ) : (
         <div>
-          <h1>Comments</h1>
-          <h1 className="text-center fs-3">
-            {postId ? toCamelCase(post.title) : ""}
-          </h1>
+          {postId && posts && (
+            <div className="w-50 mx-auto border px-2 mt-3">
+              <div>
+                <h3 className=" text-center">Post</h3>
+                <div>
+                  <p className="">
+                    <b>Title :</b> {posts.title}
+                  </p>
+                  <p className="">
+                    <b>description : </b> {posts.body}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <p className={`text-center ${postId ? "fs-5" : "fs-2"}`}>Comments</p>
           <div className="d-flex mt-2">
             <InfiniteScroll
               dataLength={comments.length}
               next={fetchComments}
-              hasMore={postId || comments.length === 100 ? false : true}
+              hasMore={!postId && comments.length < 100}
               loader={
                 <Comment
                   visible={!postId}
@@ -70,9 +95,15 @@ const CommentsList = () => {
                 />
               }
               endMessage={
-                <p style={{ textAlign: "center" }}>
-                  <b>Yay! You have seen it all</b>
-                </p>
+                comments.length === 0 ? (
+                  <p style={{ textAlign: "center" }}>
+                    <b>No comments</b>
+                  </p>
+                ) : (
+                  <p style={{ textAlign: "center" }}>
+                    <b>Yay! You have seen it all</b>
+                  </p>
+                )
               }
             >
               <div className="w-100 d-flex flex-wrap justify-content-center gap-4">
@@ -85,15 +116,13 @@ const CommentsList = () => {
                         </span>
                       </div>
                       <div className="w-80 text-left">
+                        <b>{toCamelCase(comment.name)}</b>
                         <p>{comment.email}</p>
                       </div>
                     </div>
                     <div className="px-2 pt-3">
                       <p className="mb-0">{comment.body}</p>
                     </div>
-                    {/* <div >
-                  <p className="text-end mb-0">{comment.id}</p>
-                </div> */}
                   </div>
                 ))}
               </div>

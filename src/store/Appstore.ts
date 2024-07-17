@@ -2,7 +2,11 @@
 import { create } from "zustand";
 import { PostType, userType } from "../interface/interface";
 import axios from "axios";
-import { apiUrl } from "../common/common";
+import {
+  apiUrl,
+  loadPostsFromLocalStorage,
+  savePostsToLocalStorage,
+} from "../common/common";
 
 interface appStoreType {
   loading: boolean;
@@ -14,16 +18,11 @@ interface appStoreType {
   getUser: (id: number) => Promise<void>;
   post: PostType;
   getPost: (id: number) => Promise<void>;
-  createPost: (url: string, values: PostType) => Promise<void>;
+  createPost: (values: PostType) => Promise<void>;
+  getAllPosts: () => Promise<void>;
+  updatePost: (values: PostType) => Promise<void>;
+  deletePost: (postId: number) => void;
 }
-const savePostsToLocalStorage = (posts: any) => {
-  localStorage.setItem("posts", JSON.stringify(posts));
-};
-
-const loadPostsFromLocalStorage = () => {
-  const posts = localStorage.getItem("posts");
-  return posts ? JSON.parse(posts) : [];
-};
 
 const useAppStore = create<appStoreType>((set) => ({
   loading: false,
@@ -57,8 +56,8 @@ const useAppStore = create<appStoreType>((set) => ({
     const response = await axios.get(`${apiUrl}posts/${id}`);
     set({ loading: false, post: response.data });
   },
-  createPost: async (url, values) => {
-    const response = await axios.post(url, values, {
+  createPost: async (values) => {
+    const response = await axios.post(`${apiUrl}posts`, values, {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
@@ -69,6 +68,42 @@ const useAppStore = create<appStoreType>((set) => ({
       return {
         posts: updatedPosts,
       };
+    });
+  },
+  getAllPosts: async () => {
+    set({ loading: true });
+    const response = await axios.get(`${apiUrl}posts`);
+    set({ loading: false });
+    set(() => {
+      const updatedPosts = response.data;
+      savePostsToLocalStorage(updatedPosts);
+      return {
+        posts: updatedPosts,
+      };
+    });
+  },
+  updatePost: async (data) => {
+    const response = await axios.patch(`${apiUrl}posts/${data.userId}`, data);
+    console.log(response.data, "*****repo*****");
+    set((state) => {
+      const updatedPosts = (state.posts as PostType[]).map((post: PostType) =>
+        post.id === response.data.id && post.userId === response.data.userId
+          ? response.data
+          : post
+      );
+      savePostsToLocalStorage(updatedPosts);
+      return {
+        posts: updatedPosts,
+      };
+    });
+  },
+  deletePost: async (postId) => {
+    const response = await axios.delete(`${apiUrl}posts/${postId}`);
+    console.log(response.data , "*****sdcfgv");
+    set((state) => {
+      const updatedPosts = (state.posts as PostType[]).filter((post:PostType) => post.id !== postId);
+      savePostsToLocalStorage(updatedPosts);
+      return { posts: updatedPosts };
     });
   },
 }));
