@@ -94,7 +94,7 @@ function AllPosts() {
 
   const handleDeletePost = async () => {
     if (postToDelete) {
-      deletePost(Number(postToDelete.id));
+      await deletePost(Number(postToDelete.id));
       setAllPost(getPostsFromLocalStorage());
       setFilteredPosts(getPostsFromLocalStorage());
       setShowDeleteModal(false);

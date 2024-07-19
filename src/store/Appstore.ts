@@ -57,11 +57,9 @@ const useAppStore = create<appStoreType>((set) => ({
     set({ loading: false, post: response.data });
   },
   createPost: async (values) => {
-    const response = await axios.post(`${apiUrl}posts`, values, {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
+    set({loading: true})
+    const response = await axios.post(`${apiUrl}posts`, values);
+    set({loading: false})
     set((state) => {
       const postsArray = Array.isArray(state.posts) ? state.posts : [];
       const updatedPosts = [...postsArray, response.data];
@@ -84,8 +82,9 @@ const useAppStore = create<appStoreType>((set) => ({
     });
   },
   updatePost: async (data) => {
+    set({ loading: true });
     const response = await axios.patch(`${apiUrl}posts/${data.userId}`, data);
-    console.log(response.data, "*****repo*****");
+    set({ loading: false });
     set((state) => {
       const updatedPosts = (state.posts as PostType[]).map((post: PostType) =>
         post.id === response.data.id && post.userId === response.data.userId
@@ -99,8 +98,9 @@ const useAppStore = create<appStoreType>((set) => ({
     });
   },
   deletePost: async (postId) => {
-    const response = await axios.delete(`${apiUrl}posts/${postId}`);
-    console.log(response.data, "*****sdcfgv");
+    set({ loading: true });
+    await axios.delete(`${apiUrl}posts/${postId}`);
+    set({ loading: false });
     set((state) => {
       const updatedPosts = (state.posts as PostType[]).filter(
         (post: PostType) => post.id !== postId
