@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState, useCallback } from "react";
 import { getPostsFromLocalStorage, toCamelCase } from "../../common/common";
 import { PostType, userType } from "../../interface/interface";
 import useAppStore from "../../store/Appstore";
@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { FaComments, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TbSearch } from "react-icons/tb";
+import _ from "lodash";
 
 function AllPosts() {
   const [allPost, setAllPost] = useState<PostType[]>(
@@ -62,21 +63,28 @@ function AllPosts() {
     setCurrentPosts(filteredPosts.slice(indexOfFirstPost, indexOfLastPost));
   }, [currentPage, filteredPosts, postsPerPage]);
 
-  const handleSearchValue = async (e: any) => {
+  const debouncedSearch = useCallback(
+    _.debounce((inputValue: string) => {
+      if (inputValue === "") {
+        setFilteredPosts(getPostsFromLocalStorage());
+      } else {
+        const filterPost = allPost.filter((posts) => {
+          return posts.title.toLowerCase().includes(inputValue);
+        });
+        setFilteredPosts(filterPost);
+      }
+      setCurrentPage(0);
+      setSearchLoading(false);
+    }, 1000),
+    [allPost]
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSearchValue = (e:any) => {
     const inputValue: string = e.target.value.toLowerCase();
     setSearchValue(inputValue);
     setSearchLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    if (inputValue === "") {
-      setFilteredPosts(getPostsFromLocalStorage());
-    } else {
-      const filterPost = allPost.filter((posts) => {
-        return posts.title.toLowerCase().includes(inputValue);
-      });
-      setFilteredPosts(filterPost);
-    }
-    setCurrentPage(0);
-    setSearchLoading(false);
+    debouncedSearch(inputValue);
   };
 
   const handleShowModal = (action: "Add" | "Update", post?: PostType) => {
