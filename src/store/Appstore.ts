@@ -4,7 +4,7 @@ import { PostType, userType } from "../interface/interface";
 import axios from "axios";
 import {
   apiUrl,
-  loadPostsFromLocalStorage,
+  getPostsFromLocalStorage,
   savePostsToLocalStorage,
 } from "../common/common";
 
@@ -28,7 +28,7 @@ const useAppStore = create<appStoreType>((set) => ({
   loading: false,
   users: [],
   user: { id: 0, name: "", username: "", email: "" },
-  posts: loadPostsFromLocalStorage(),
+  posts: getPostsFromLocalStorage(),
   post: {
     userId: 0,
     id: 0,
@@ -63,7 +63,8 @@ const useAppStore = create<appStoreType>((set) => ({
       },
     });
     set((state) => {
-      const updatedPosts = [...state.posts, response.data];
+      const postsArray = Array.isArray(state.posts) ? state.posts : [];
+      const updatedPosts = [...postsArray, response.data];
       savePostsToLocalStorage(updatedPosts);
       return {
         posts: updatedPosts,
@@ -99,9 +100,11 @@ const useAppStore = create<appStoreType>((set) => ({
   },
   deletePost: async (postId) => {
     const response = await axios.delete(`${apiUrl}posts/${postId}`);
-    console.log(response.data , "*****sdcfgv");
+    console.log(response.data, "*****sdcfgv");
     set((state) => {
-      const updatedPosts = (state.posts as PostType[]).filter((post:PostType) => post.id !== postId);
+      const updatedPosts = (state.posts as PostType[]).filter(
+        (post: PostType) => post.id !== postId
+      );
       savePostsToLocalStorage(updatedPosts);
       return { posts: updatedPosts };
     });

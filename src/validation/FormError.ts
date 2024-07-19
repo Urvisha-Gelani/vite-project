@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 export const postSchema = Yup.object({
+  userId: Yup.number().required("Required"),
   title: Yup.string()
     .max(500, "Must be 500 characters or less")
     .required("Required"),

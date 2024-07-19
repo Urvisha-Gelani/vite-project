@@ -22,8 +22,8 @@ export interface userType {
   };
 }
 export interface PostType {
-  userId: number;
-  id: number;
+  userId: number | string;
+  id: number | string;
   title: string;
   body: string;
 }

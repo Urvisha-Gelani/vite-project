@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
 import { AlbumsType } from "../../interface/interface";
 import { Link, useLocation } from "react-router-dom";
 import { apiUrl, toCamelCase } from "../../common/common";
@@ -81,7 +82,6 @@ function Albums() {
               <Table striped hover className="border" size="sm">
                 <thead>
                   <tr className="px-3  align-middle box-shadow mb-2">
-                    {/* <th className="py-3">User Id</th> */}
                     <th className="py-3 text-center">Album Id</th>
                     <th className="w-50">Title</th>
                     <th>Photos</th>
@@ -93,7 +93,6 @@ function Albums() {
                       className="px-3  align-middle  box-shadow mb-2"
                       key={album.id}
                     >
-                      {/* <td className="py-3">{album.userId}</td> */}
                       <td className="text-center">{album.id}</td>
                       <td className="w-50 text-start">{toCamelCase(album.title)}</td>
                       <td className="py-3">

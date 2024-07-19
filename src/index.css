@@ -12,7 +12,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 /* src/index.css */
-h1,p {
+h1,
+p {
   margin: 0 !important;
 }
 .content {
@@ -88,7 +89,13 @@ h1,p {
   height: 400px;
   overflow-y: auto;
 }
-
+.search-input:focus {
+  box-shadow: none!important;
+ 
+}
+.search-input {
+   padding: 5px!important;
+}
 @media (max-width: 768px) {
   .vh-100 {
     height: auto;

@@ -43,7 +43,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formPostUserId">
             <Form.Label>User</Form.Label>
-            <Form.Control
+            <Form.Select
               as="select"
               name="userId"
               onChange={handleChange}
@@ -57,13 +57,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
                   {user.name}
                 </option>
               ))}
-            </Form.Control>
+            </Form.Select>
             <Form.Control.Feedback type="invalid">
               {errors.userId}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formPostTitle">
-            <Form.Label>Title</Form.Label>
+            <Form.Label>Title</Form.Label>x
             <Form.Control
               type="text"
               name="title"

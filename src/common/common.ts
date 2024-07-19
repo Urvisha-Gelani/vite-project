@@ -11,7 +11,7 @@ export const savePostsToLocalStorage = (posts: any) => {
   localStorage.setItem("posts", JSON.stringify(posts));
 };
 
-export const loadPostsFromLocalStorage = () => {
+export const getPostsFromLocalStorage = () => {
   const posts = localStorage.getItem("posts");
   return posts ? JSON.parse(posts) : [];
 };

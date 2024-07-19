@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { loadPostsFromLocalStorage, toCamelCase } from "../../common/common";
+import { getPostsFromLocalStorage, toCamelCase } from "../../common/common";
 import { PostType, userType } from "../../interface/interface";
 import useAppStore from "../../store/Appstore";
 import Spinner from "../spinner/Spinner";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Form, InputGroup } from "react-bootstrap";
 import {
   MdOutlineAddComment,
   MdSkipNext,
@@ -15,23 +16,28 @@ import DeleteModal from "../../modal/DeleteModal";
 import { Link } from "react-router-dom";
 import { FaComments, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { TbSearch } from "react-icons/tb";
 
 function AllPosts() {
   const [allPost, setAllPost] = useState<PostType[]>(
-    loadPostsFromLocalStorage()
+    getPostsFromLocalStorage()
   );
+  const [filteredPosts, setFilteredPosts] = useState<PostType[]>(allPost);
+  const [currentPosts, setCurrentPosts] = useState<PostType[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchValue, setSearchValue] = useState<string>("");
   const [postsPerPage] = useState(10);
   const [showModal, setShowModal] = useState(false);
   const [modalAction, setModalAction] = useState<"Add" | "Update">("Add");
   const [initialValues, setInitialValues] = useState<PostType>({
-    userId: 0,
+    userId: "",
     title: "",
     body: "",
-    id: Number(""),
+    id: "",
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [postToDelete, setPostToDelete] = useState<PostType | null>(null);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   const {
     getAllPosts,
@@ -46,40 +52,52 @@ function AllPosts() {
   useEffect(() => {
     getAllPosts();
     getUsers();
-    setAllPost(loadPostsFromLocalStorage());
+    setAllPost(getPostsFromLocalStorage());
+    setFilteredPosts(getPostsFromLocalStorage());
   }, [getAllPosts, getUsers]);
 
-  const indexOfLastPost = (currentPage + 1) * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = allPost.slice(indexOfFirstPost, indexOfLastPost);
+  useEffect(() => {
+    const indexOfLastPost = (currentPage + 1) * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    setCurrentPosts(filteredPosts.slice(indexOfFirstPost, indexOfLastPost));
+  }, [currentPage, filteredPosts, postsPerPage]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handlePageClick = (data: any) => {
-    setCurrentPage(data.selected);
+  const handleSearchValue = async (e: any) => {
+    const inputValue: string = e.target.value.toLowerCase();
+    setSearchValue(inputValue);
+    setSearchLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (inputValue === "") {
+      setFilteredPosts(getPostsFromLocalStorage());
+    } else {
+      const filterPost = allPost.filter((posts) => {
+        return posts.title.toLowerCase().includes(inputValue);
+      });
+      setFilteredPosts(filterPost);
+    }
+    setCurrentPage(0);
+    setSearchLoading(false);
   };
 
   const handleShowModal = (action: "Add" | "Update", post?: PostType) => {
     setModalAction(action);
     setInitialValues(
-      post || { userId: 0, title: "", body: "", id: Number("") }
+      post || { userId: "", title: "", body: "", id: Number("") }
     );
     setShowModal(true);
   };
-
-  const handleCloseModal = () => setShowModal(false);
 
   const handleShowDeleteModal = (post: PostType) => {
     setPostToDelete(post);
     setShowDeleteModal(true);
   };
 
-  const handleCloseDeleteModal = () => setShowDeleteModal(false);
-
   const handleDeletePost = async () => {
     if (postToDelete) {
-      await deletePost(postToDelete.id);
-      setAllPost(loadPostsFromLocalStorage());
-      handleCloseDeleteModal();
+      deletePost(Number(postToDelete.id));
+      setAllPost(getPostsFromLocalStorage());
+      setFilteredPosts(getPostsFromLocalStorage());
+      setShowDeleteModal(false);
     }
   };
 
@@ -95,77 +113,98 @@ function AllPosts() {
     } else {
       await updatePost(data);
     }
-    setAllPost(loadPostsFromLocalStorage());
+    setAllPost(getPostsFromLocalStorage());
+    setFilteredPosts(getPostsFromLocalStorage());
   };
 
   return (
     <>
-      {loading ? (
+      <div className="d-flex justify-content-between flex-wrap align-items-center pt-2">
+        <h1 className="px-3 w-25">Posts</h1>
+        <div className="w-50">
+          <InputGroup.Text className="bg-light px-1 py-0">
+            <TbSearch className="fs-4" />
+            <Form.Group className="w-100 border-0">
+              <Form.Control
+                type="text"
+                value={searchValue}
+                onChange={(e) => handleSearchValue(e)}
+                placeholder="Search..."
+                className="border-0 bg-light search-input"
+              />
+            </Form.Group>
+          </InputGroup.Text>
+        </div>
+        <div className="w-25 text-end px-4">
+          <Button
+            variant="primary"
+            className="btn-bg-color border-0 px-4"
+            onClick={() => handleShowModal("Add")}
+          >
+            Post <MdOutlineAddComment className="fs-4" />
+          </Button>
+        </div>
+      </div>
+      {loading || searchLoading ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
-          <Spinner status={loading} />
+          <Spinner status={loading || searchLoading} />
         </div>
       ) : (
         <div className="py-2">
-          <div className="d-flex justify-content-between flex-wrap align-items-center">
-            <h1 className="px-3 w-75">Posts</h1>
-            <div className="w-25 text-end px-4">
-              <Button
-                variant="primary"
-                className="btn-bg-color border-0 px-4"
-                onClick={() => handleShowModal("Add")}
-              >
-                Post <MdOutlineAddComment className="fs-4" />
-              </Button>
-            </div>
-          </div>
-          <div className="d-flex flex-wrap align-item-center justify-content-center gap-4 mt-3">
-            {currentPosts.map((post) => (
-              <Card
-                style={{ width: "20rem" }}
-                className="mb-3 box-shadow border card-bg"
-                key={post.id}
-              >
-                <Card.Body>
-                  <Card.Title>{toCamelCase(post.title)}</Card.Title>
-                  <Card.Text>
-                    {post.body.length > 100
-                      ? `${post.body.slice(0, 100)}...`
-                      : post.body}
-                  </Card.Text>
-                  <div className="d-flex justify-content-center gap-3 mt-3">
-                    <Card.Text className="text-center">
-                      <div onClick={() => handleShowModal("Update", post)}>
+          {currentPosts.length === 0 ? (
+            <div className="fs-5 text-center ">No posts match</div>
+          ) : (
+            <div className="d-flex flex-wrap align-item-center justify-content-center gap-4 mt-3">
+              {currentPosts.map((post) => (
+                <Card
+                  style={{ width: "20rem" }}
+                  className="mb-3 box-shadow border card-bg"
+                  key={post.id}
+                >
+                  <Card.Body>
+                    <Card.Title>{toCamelCase(post.title)}</Card.Title>
+                    <Card.Text>
+                      {post.body.length > 100
+                        ? `${post.body.slice(0, 100)}...`
+                        : post.body}
+                    </Card.Text>
+                    <div className="d-flex justify-content-center gap-3 mt-3">
+                      <div
+                        className="text-center"
+                        onClick={() => handleShowModal("Update", post)}
+                      >
                         <FaRegEdit className="fs-5 text-color" />
                       </div>
-                    </Card.Text>
 
-                    <Card.Text className="text-center">
-                      <Link to={`/comments?postId=${post.id}`}>
-                        <div>
+                      <div className="text-center">
+                        <Link to={`/comments?postId=${post.id}`}>
                           <FaComments className="fs-5 text-color" />
-                        </div>
-                      </Link>
-                    </Card.Text>
-                    <Card.Text className="text-center text-color">
-                      <div onClick={() => handleShowDeleteModal(post)}>
+                        </Link>
+                      </div>
+                      <div
+                        className="text-center text-color"
+                        onClick={() => handleShowDeleteModal(post)}
+                      >
                         <RiDeleteBin6Line className="fs-5 text-color" />
                       </div>
-                    </Card.Text>
-                  </div>
-                </Card.Body>
-              </Card>
-            ))}
-          </div>
-          {allPost.length > postsPerPage && (
+                    </div>
+                  </Card.Body>
+                </Card>
+              ))}
+            </div>
+          )}
+          {filteredPosts.length > postsPerPage && (
             <nav className="d-flex justify-content-center">
               <ReactPaginate
                 previousLabel={<MdSkipPrevious className="fs-6 text-white" />}
                 nextLabel={<MdSkipNext className="fs-6 text-white" />}
                 breakLabel="..."
-                pageCount={Math.ceil(allPost.length / postsPerPage)}
+                pageCount={Math.ceil(filteredPosts.length / postsPerPage)}
                 marginPagesDisplayed={1}
                 pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
+                onPageChange={(data: { selected: number }) =>
+                  setCurrentPage(data.selected)
+                }
                 containerClassName="pagination"
                 activeClassName="active"
                 activeLinkClassName="text-white pagination-bg"
@@ -179,7 +218,7 @@ function AllPosts() {
 
           <CustomModal
             showModal={showModal}
-            handleClose={handleCloseModal}
+            handleClose={() => setShowModal(false)}
             handleAction={handleAction}
             initialValues={initialValues}
             users={users as userType[]}
@@ -188,7 +227,7 @@ function AllPosts() {
 
           <DeleteModal
             show={showDeleteModal}
-            handleClose={handleCloseDeleteModal}
+            handleClose={() => setShowDeleteModal(false)}
             handleDelete={handleDeletePost}
           />
         </div>

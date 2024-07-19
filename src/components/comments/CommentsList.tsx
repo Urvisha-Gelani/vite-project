@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -5,7 +6,7 @@ import { CommentType, PostType } from "../../interface/interface";
 import { Comment } from "react-loader-spinner";
 import {
   apiUrl,
-  loadPostsFromLocalStorage,
+  getPostsFromLocalStorage,
   toCamelCase,
 } from "../../common/common";
 import axios from "axios";
@@ -28,7 +29,7 @@ const CommentsList = () => {
   };
 
   const showPostsComments = (postId: any) => {
-    const allPosts = loadPostsFromLocalStorage().filter(
+    const allPosts = getPostsFromLocalStorage().filter(
       (post: PostType) => post.id == postId
     );
     if (allPosts.length > 0) {

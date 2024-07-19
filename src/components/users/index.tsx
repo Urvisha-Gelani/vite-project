@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { userType } from "../../interface/interface";
 import Spinner from "../spinner/Spinner";
 import { Link } from "react-router-dom";
-// import { FaEye } from "react-icons/fa";
 
 function Users() {
   const { users, getUsers, loading } = useAppStore();
@@ -29,7 +28,7 @@ function Users() {
                   <th className="py-3">Name</th>
                   <th>Email</th>
                   <th>City</th>
-                  <th colSpan={2}>Action</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -43,18 +42,6 @@ function Users() {
                       <td className="py-3">{users.name}</td>
                       <td className="">{users.email}</td>
                       <td className="">{users.address?.city}</td>
-                      {/* <td className="padding-0 text-center">
-                        <Link to={`/users/${users.id}/posts`}>
-                          {" "}
-                          <Button
-                            variant="primary"
-                            className="btn-bg-color border-0"
-                          >
-                            Posts
-                          </Button>
-                        </Link>
-                      </td> */}
-
                       <td className="padding-0 text-center">
                         <Link to={`/albums?userId=${users.id}`}>
                           <Button
@@ -65,11 +52,7 @@ function Users() {
                           </Button>
                         </Link>
                       </td>
-                      {/* <td className="padding-0 text-center">
-                        <Link to={`/users/${users.id}`}>
-                        <FaEye />
-                        </Link>
-                      </td> */}
+                     
                     </tr>
                   );
                 })}
