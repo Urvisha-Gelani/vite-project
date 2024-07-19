@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useFormik } from "formik";
-import { postSchema } from "../validation/FormError";
-import { PostType, userType } from "../interface/interface";
+import { postSchema } from "../../validation/FormError";
+import { PostType, userType } from "../../interface/interface";
 
 interface CustomModalProps {
   showModal: boolean;

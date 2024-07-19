@@ -11,8 +11,8 @@ import {
   MdSkipPrevious,
 } from "react-icons/md";
 import ReactPaginate from "react-paginate";
-import CustomModal from "../../modal/CustomModal";
-import DeleteModal from "../../modal/DeleteModal";
+import CustomModal from "../modal/CustomModal";
+import DeleteModal from "../modal/DeleteModal";
 import { Link } from "react-router-dom";
 import { FaComments, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
