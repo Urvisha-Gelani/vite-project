@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useCallback } from "react";
 import { getPostsFromLocalStorage, toCamelCase } from "../../common/common";
 import { PostType, userType } from "../../interface/interface";
 import useAppStore from "../../store/Appstore";
 import Spinner from "../spinner/Spinner";
-import { Button, Card, Form, InputGroup } from "react-bootstrap";
+import { Button, Card, Form, InputGroup, OverlayTrigger, Tooltip } from "react-bootstrap";
 import {
   MdOutlineAddComment,
   MdSkipNext,
@@ -18,6 +17,7 @@ import { FaComments, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TbSearch } from "react-icons/tb";
 import _ from "lodash";
+import { Helmet } from "react-helmet";
 
 function AllPosts() {
   const [allPost, setAllPost] = useState<PostType[]>(
@@ -63,6 +63,7 @@ function AllPosts() {
     setCurrentPosts(filteredPosts.slice(indexOfFirstPost, indexOfLastPost));
   }, [currentPage, filteredPosts, postsPerPage]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     _.debounce((inputValue: string) => {
       if (inputValue === "") {
@@ -80,7 +81,7 @@ function AllPosts() {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSearchValue = (e:any) => {
+  const handleSearchValue = (e: any) => {
     const inputValue: string = e.target.value.toLowerCase();
     setSearchValue(inputValue);
     setSearchLoading(true);
@@ -127,6 +128,9 @@ function AllPosts() {
 
   return (
     <>
+      <Helmet>
+        <title>All Posts</title>
+      </Helmet>
       <div className="d-flex justify-content-between flex-wrap align-items-center pt-2">
         <h1 className="px-3 w-25">Posts</h1>
         <div className="w-50">
@@ -171,11 +175,20 @@ function AllPosts() {
                 >
                   <Card.Body>
                     <Card.Title>{toCamelCase(post.title)}</Card.Title>
-                    <Card.Text>
-                      {post.body.length > 100
-                        ? `${post.body.slice(0, 100)}...`
-                        : post.body}
-                    </Card.Text>
+                    <OverlayTrigger
+                      placement="bottom"
+                      overlay={
+                        <Tooltip id={`tooltip-${post.id}`} >
+                          {post.body}
+                        </Tooltip>
+                      }
+                    >
+                      <Card.Text>
+                        {post.body.length > 100
+                          ? `${post.body.slice(0, 100)}...`
+                          : post.body}
+                      </Card.Text>
+                    </OverlayTrigger>
                     <div className="d-flex justify-content-center gap-3 mt-3">
                       <div
                         className="text-center"

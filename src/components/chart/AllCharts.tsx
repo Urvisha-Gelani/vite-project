@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import BarChart from "../barChart/BarChart";
 import DoughnutChart from "../barChart/DoughnutChart";
 import LineChart from "../barChart/LineChart";
@@ -5,6 +6,10 @@ import LineChart from "../barChart/LineChart";
 
 function AllCharts() {
   return (
+    <>
+      <Helmet>
+        <title>Dashboard</title>
+      </Helmet>
     <div className="d-flex justify-content-between align-items-center flex-wrap ">
       <div className="w-75 px-2 py-3 box-shadow mx-auto">
         <LineChart />
@@ -19,6 +24,7 @@ function AllCharts() {
         <RadarChart />
       </div> */}
     </div>
+    </>
   );
 }
 

@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Spinner from "../spinner/Spinner";
+import { Helmet } from "react-helmet";
 
 const CommentsList = () => {
   const location = useLocation();
@@ -56,6 +57,9 @@ const CommentsList = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Comments</title>
+      </Helmet>
       {loading && comments.length === 0 ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
           <Spinner status={loading} />

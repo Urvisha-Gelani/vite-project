@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { userType } from "../../interface/interface";
 import Spinner from "../spinner/Spinner";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 function Users() {
   const { users, getUsers, loading } = useAppStore();
@@ -14,6 +15,9 @@ function Users() {
   }, [getUsers]);
   return (
     <>
+      <Helmet>
+        <title>Users</title>
+      </Helmet>
       <div className="">
         {loading ? (
           <div className="d-flex justify-content-center align-items-center vh-100">

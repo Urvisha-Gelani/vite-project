@@ -9,6 +9,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { ThreeDots } from "react-loader-spinner";
 import { Button, Table } from "react-bootstrap";
 import useAppStore from "../../store/Appstore";
+import { Helmet } from "react-helmet";
 
 function Albums() {
   const location = useLocation();
@@ -22,7 +23,7 @@ function Albums() {
   const commentsUrl = () => {
     return userId
       ? `${apiUrl}albums?userId=${userId}`
-      : `${apiUrl}albums?_page=${page}&_limit=10`;
+      : `${apiUrl}albums?_page=${page}&_limit=15`;
   };
 
   useEffect(() => {
@@ -45,6 +46,9 @@ function Albums() {
 
   return (
     <>
+      <Helmet>
+        <title>Albums</title>
+      </Helmet>
       {loading || albums.length === 0 ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
           <Spinner status={loading || albums.length === 0 ? true : loading} />
@@ -82,7 +86,7 @@ function Albums() {
               <Table striped hover className="border" size="sm">
                 <thead>
                   <tr className="px-3  align-middle box-shadow mb-2">
-                    <th className="py-3 text-center">Album Id</th>
+                    <th className="py-2 text-center">Album Id</th>
                     <th className="w-50">Title</th>
                     <th>Photos</th>
                   </tr>
@@ -94,8 +98,10 @@ function Albums() {
                       key={album.id}
                     >
                       <td className="text-center">{album.id}</td>
-                      <td className="w-50 text-start">{toCamelCase(album.title)}</td>
-                      <td className="py-3">
+                      <td className="w-50 text-start">
+                        {toCamelCase(album.title)}
+                      </td>
+                      <td className="py-1">
                         <Link to="photos">
                           <Button
                             variant="primary"
