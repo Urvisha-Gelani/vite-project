@@ -11,7 +11,7 @@ function AllCharts() {
       <div className="w-50 px-2 py-2">
         <BarChart />
       </div>
-      <div className="w-50 px-2 py-2">
+      <div className="w-50 px-2 py-2" style={{height:"370px"}}>
         <DoughnutChart />
       </div>
     </div>

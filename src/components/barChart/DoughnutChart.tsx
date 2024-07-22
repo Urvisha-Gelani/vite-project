@@ -45,7 +45,7 @@ const options = {
 };
 
 const DoughnutChart: React.FC = () => {
-  return <Doughnut data={data} options={options} />;
+  return <Doughnut data={data} options={options} className="mx-auto"/>;
 };
 
 export default DoughnutChart;

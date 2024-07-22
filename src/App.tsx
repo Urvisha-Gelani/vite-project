@@ -5,6 +5,7 @@ import CommentsList from "./components/comments/CommentsList";
 import Albums from "./components/albums/Albums";
 import AllPosts from "./components/posts/AllPosts";
 import AllCharts from "./components/chart/AllCharts";
+import FormWithDataValidation from "./components/form/FormWithDateValidation";
 function App() {
   return (
     <>
@@ -17,6 +18,7 @@ function App() {
             <Route path="comments" element={<CommentsList />} />
             <Route path="albums" element={<Albums />} />
             <Route path="dashboard" element={<AllCharts />} />
+            <Route path="form" element={<FormWithDataValidation />} />
           </Route>
         </Routes>
       </Router>
