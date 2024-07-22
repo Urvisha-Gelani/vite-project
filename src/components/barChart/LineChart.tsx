@@ -80,7 +80,7 @@ const LineChart: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  return <Line data={data} options={options} className="w-75 mx-auto" />;
+  return <Line data={data} options={options} className="w-75 mx-auto h-75   " />;
 };
 
 export default LineChart;

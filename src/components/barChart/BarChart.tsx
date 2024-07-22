@@ -75,7 +75,7 @@ const BarChart: React.FC = () => {
   useEffect(() => {
     getUsers();
   }, [getUsers]);
-  return <Bar data={data} options={options} />;
+  return <Bar data={data} options={options} className="w-100"/>;
 };
 
 export default BarChart;
